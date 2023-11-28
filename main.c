@@ -17,7 +17,20 @@ struct dataTemp
     int8_t temperature;
 };
 
-/**/
+/* Функция вывода массива структур dataTemp с длиной line */
+void printTempStruct(struct dataTemp *statistic, int line){
+    for(int i = 0; i <= line; i++){
+        printf("%d-%02d-%d  %02d:%02d  t=%d\n", 
+            statistic[i].year,
+            statistic[i].mounth,
+            statistic[i].day,
+            statistic[i].hour,
+            statistic[i].minute,
+            statistic[i].temperature);
+    }
+}
+
+/* Функция чтения файлов. Принимает путь. Возвращает адрес начала строки */
 char *readFile(char *name){
     FILE *f;
     long int size = 0;
@@ -31,19 +44,18 @@ char *readFile(char *name){
         // определение размера файла
         fseek(f, 0, SEEK_END);
         size = ftell(f);
-        // printf("Size file \t- %ld \n", size);
 
         fseek(f, 0, SEEK_SET); // возврат курсора на начало файла
         ptr = calloc(size, sizeof(char)); // выделение памяти под текущий размер файла
 
-        fscanf(f, "%[^EOF]", ptr);
+        fscanf(f, "%[^EOF]", ptr); // запись данных в файл
     }
 
     return ptr;
 }
 
 #define N 6
-/*  */
+/* Функция конвертации полученной строки csv в массив структур dataTemp */
 void temperCsv(char *csv, struct dataTemp *statistic){
     printf("--temperCsv--\n");
 
@@ -61,6 +73,7 @@ void temperCsv(char *csv, struct dataTemp *statistic){
             if(counter > N){
                 counter = 0;
                 minus = 0;
+                printf("More parameters!");
             }
         }
         else if((csv[i] == '\n') || (csv[i] == 0)) {
@@ -70,13 +83,14 @@ void temperCsv(char *csv, struct dataTemp *statistic){
 
             if(counter == 5){
                 // printf("%d = %d;%d;%d;%d;%d;%d\n", counter, tmpArr[0], tmpArr[1], tmpArr[2], tmpArr[3], tmpArr[4], tmpArr[5]);
+                //if(realloc(statistic, (struct_counter+1) * sizeof(statistic))){
                 statistic[struct_counter].year = tmpArr[0];
                 statistic[struct_counter].mounth = tmpArr[1];
                 statistic[struct_counter].day = tmpArr[2];
                 statistic[struct_counter].hour = tmpArr[3];
                 statistic[struct_counter].minute = tmpArr[4];
                 statistic[struct_counter].temperature = tmpArr[5];
-
+                
                 printf("%d-%02d-%d  %02d:%02d  t=%d\n", 
                     statistic[struct_counter].year,
                     statistic[struct_counter].mounth,
@@ -85,7 +99,9 @@ void temperCsv(char *csv, struct dataTemp *statistic){
                     statistic[struct_counter].minute,
                     statistic[struct_counter].temperature);
 
-                struct_counter++;
+                struct_counter++; 
+                // }
+                // else printf("!\n");
             }
             else {
                 printf("ERROR line = %d (%d;%d;%d;%d;%d;%d)\n", struct_counter+1, tmpArr[0], tmpArr[1], tmpArr[2], tmpArr[3], tmpArr[4], tmpArr[5]);
@@ -107,40 +123,33 @@ void temperCsv(char *csv, struct dataTemp *statistic){
         i++;
     }
 
-    printf("\n");
+    printf("End convert\n");
 }
 
 void doit(char *file){
     char *csv = readFile(file);
 
     /*****************************/
+    // нахождение количества строк csv
     long int csvlen = strlen(csv);
     long int line = 0;
     int i = 0;
-    // нахождение количества строк csv
     while(i < csvlen){
-        if((csv[i] == '\n') || (csv[i] == 0) )
+        if((csv[i] == '\n') || (csv[i] == 0) ) // поиск по переводу строки
             line++;
-        
         i++;
     }
     printf("line - %d\n", line);
     /*****************************/
     
-    struct dataTemp statistic[line]; // размер массива структур = количество строк в файле
+    struct dataTemp *statistic; // размер массива структур = количество строк в файле
+
+    statistic = malloc(line * sizeof(*statistic));
 
     temperCsv(csv, statistic);
-
-    /*****************************/
-    for(int i = 0; i <= line; i++){
-        printf("%d-%02d-%d  %02d:%02d  t=%d\n", 
-            statistic[i].year,
-            statistic[i].mounth,
-            statistic[i].day,
-            statistic[i].hour,
-            statistic[i].minute,
-            statistic[i].temperature);
-    }
+    
+    // printf("%d\n",statistic[1].temperature);
+    // printf("length - %d\n",  sizeof(*statistic) / sizeof(statistic[0]));
 }
 
 
