@@ -25,4 +25,4 @@ struct dataTemp
 
 char *readFile(char *name);
 struct dataTemp *temperCsv(char *csv);
-void printTempStruct(struct dataTemp *statistic, int line);
+void printTempStruct(struct dataTemp *statistic, int start, int end);

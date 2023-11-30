@@ -47,8 +47,21 @@ struct dataTemp *temperCsv(char *csv){
     printf("line - %d\n", settings.numberLine);
     /*****************************/
 
+    typedef struct {
+        int i;
+    } test;
+
+    test **t = (test **)malloc(20 * sizeof(test *));
+    for (i = 0; i < 20; ++i)
+        t[i] = (test *)malloc(20 * sizeof(test));
+    
+    // struct dataTemp **year = malloc(12 * sizeof(year *));
+    // for (i = 0; i < 31; ++i)
+    //     year[i] = malloc(31 * sizeof(year));
+    
+
     struct dataTemp *statistic; // размер массива структур = количество строк в файле
-    statistic = malloc(settings.numberLine * sizeof(*statistic));
+    statistic = malloc(1 * sizeof(*statistic));
 
     /*****************************/
     
@@ -74,33 +87,27 @@ struct dataTemp *temperCsv(char *csv){
                 tmpArr[counter] = 0 - tmpArr[counter];
 
             if(counter == 5){
-                // printf("%d = %d;%d;%d;%d;%d;%d\n", counter, tmpArr[0], tmpArr[1], tmpArr[2], tmpArr[3], tmpArr[4], tmpArr[5]);
-                //if(realloc(statistic, (struct_counter+1) * sizeof(statistic))){
-                statistic[struct_counter].year = tmpArr[0];
-                statistic[struct_counter].mounth = tmpArr[1];
-                statistic[struct_counter].day = tmpArr[2];
-                statistic[struct_counter].hour = tmpArr[3];
-                statistic[struct_counter].minute = tmpArr[4];
-                statistic[struct_counter].temperature = tmpArr[5];
-                
-                printf("%d-%02d-%d  %02d:%02d  t=%d\n", 
-                    statistic[struct_counter].year,
-                    statistic[struct_counter].mounth,
-                    statistic[struct_counter].day,
-                    statistic[struct_counter].hour,
-                    statistic[struct_counter].minute,
-                    statistic[struct_counter].temperature);
+                if(realloc(statistic, (struct_counter+1) * sizeof(*statistic))){
+                    statistic[struct_counter].year = tmpArr[0];
+                    statistic[struct_counter].mounth = tmpArr[1];
+                    statistic[struct_counter].day = tmpArr[2];
+                    statistic[struct_counter].hour = tmpArr[3];
+                    statistic[struct_counter].minute = tmpArr[4];
+                    statistic[struct_counter].temperature = tmpArr[5];
+                    
+                    printTempStruct(statistic, struct_counter, struct_counter);
 
-                struct_counter++; 
-                // }
-                // else printf("!\n");
+                    struct_counter++; 
+                }
+                else 
+                    printf("!\n");
             }
             else {
                 printf("ERROR line = %d (%d;%d;%d;%d;%d;%d)\n", struct_counter+1, tmpArr[0], tmpArr[1], tmpArr[2], tmpArr[3], tmpArr[4], tmpArr[5]);
             }
             counter = 0;
             minus = 0;
-            tmpArr[0]=tmpArr[1]=tmpArr[2]=tmpArr[3]=tmpArr[4]=tmpArr[5] = 0;
+            tmpArr[0]=tmpArr[1]=tmpArr[2]=tmpArr[3]=tmpArr[4]=tmpArr[5]=0;
         }
         else if((counter == 5) && (csv[i] == '-'))
             minus = 1;
@@ -125,8 +132,8 @@ struct dataTemp *temperCsv(char *csv){
 }
 
 /* Функция вывода массива структур dataTemp с длиной line */
-void printTempStruct(struct dataTemp *statistic, int line){
-    for(int i = 0; i <= line; i++){
+void printTempStruct(struct dataTemp *statistic, int start, int end){
+    for(int i = start; i <= end; i++){
         printf("%d-%02d-%d  %02d:%02d  t=%d\n", 
             statistic[i].year,
             statistic[i].mounth,

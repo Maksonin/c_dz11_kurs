@@ -28,12 +28,31 @@ void doit(){
     
     // printf(" %d \n", statistic[0].temperature);
     int month = 2;
-    if(month == 2){
-        for(int i = 0; i < settings.numberLine; i++){
-            if(statistic[i].mounth == month)
-                printf("t-%d\n",statistic[i].temperature);
+    int min_temp = 0;
+    int max_temp = 0;
+    float sr_temp = 0;
+    int i = 0;
+    int j = 0;
+    
+    while(i < settings.numberLine){
+        if(statistic[i].mounth == month){
+            printTempStruct(statistic, i, i);
+            if(j==0){
+                max_temp = statistic[i].temperature;
+                min_temp = statistic[i].temperature;
+            }
+            sr_temp += statistic[i].temperature;
+            if(statistic[i].temperature > max_temp)
+                max_temp = statistic[i].temperature;
+            if(statistic[i].temperature < min_temp)
+                min_temp = statistic[i].temperature;
+            j++;
         }
+        i++;
     }
+    sr_temp /= j;
+
+    printf("Middle - %.2f \tMinimum - %d \tMaximum - %d\n", sr_temp, min_temp, max_temp);
 }
 
 /* Приложение должно обрабатывать аргументы командной строки:
