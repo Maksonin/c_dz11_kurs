@@ -13,7 +13,7 @@ struct programm
     _Bool mounth; // месяц
 } settings;
 
-struct dataTemp
+typedef struct 
 {
     uint16_t year;
     uint8_t mounth;
@@ -21,8 +21,8 @@ struct dataTemp
     uint8_t hour;
     uint8_t minute;
     int8_t temperature;
-};
+} dataTemp;
 
 char *readFile(char *name);
-struct dataTemp *temperCsv(char *csv);
-void printTempStruct(struct dataTemp *statistic, int start, int end);
+dataTemp *temperCsv(char *csv);
+void printTempStruct(dataTemp *statistic, int start, int end);

@@ -26,7 +26,7 @@ char *readFile(char *name){
 
 #define N 6
 /* Функция конвертации полученной строки csv в массив структур dataTemp */
-struct dataTemp *temperCsv(char *csv){
+dataTemp *temperCsv(char *csv){
     printf("--temperCsv--\n");
 
     /*****************************/
@@ -47,21 +47,20 @@ struct dataTemp *temperCsv(char *csv){
     printf("line - %d\n", settings.numberLine);
     /*****************************/
 
-    typedef struct {
-        int i;
-    } test;
+    // typedef struct {
+    //     int i;
+    // } test;
 
-    test **t = (test **)malloc(20 * sizeof(test *));
-    for (i = 0; i < 20; ++i)
-        t[i] = (test *)malloc(20 * sizeof(test));
-    
-    // struct dataTemp **year = malloc(12 * sizeof(year *));
+    // test **t = (test **)malloc(20 * sizeof(test *));
+    // for (i = 0; i < 20; ++i)
+    //     t[i] = (test *)malloc(20 * sizeof(test));
+
+    // dataTemp **year = (year **)malloc(12 * sizeof(year *));
     // for (i = 0; i < 31; ++i)
     //     year[i] = malloc(31 * sizeof(year));
-    
 
-    struct dataTemp *statistic; // размер массива структур = количество строк в файле
-    statistic = malloc(1 * sizeof(*statistic));
+    dataTemp *statistic; // размер массива структур = количество строк в файле
+    statistic = malloc(settings.numberLine * sizeof(*statistic));
 
     /*****************************/
     
@@ -87,7 +86,7 @@ struct dataTemp *temperCsv(char *csv){
                 tmpArr[counter] = 0 - tmpArr[counter];
 
             if(counter == 5){
-                if(realloc(statistic, (struct_counter+1) * sizeof(*statistic))){
+                // if(realloc(statistic, (struct_counter+1) * sizeof(*statistic))){
                     statistic[struct_counter].year = tmpArr[0];
                     statistic[struct_counter].mounth = tmpArr[1];
                     statistic[struct_counter].day = tmpArr[2];
@@ -98,9 +97,9 @@ struct dataTemp *temperCsv(char *csv){
                     printTempStruct(statistic, struct_counter, struct_counter);
 
                     struct_counter++; 
-                }
-                else 
-                    printf("!\n");
+                // }
+                // else 
+                //     printf("!\n");
             }
             else {
                 printf("ERROR line = %d (%d;%d;%d;%d;%d;%d)\n", struct_counter+1, tmpArr[0], tmpArr[1], tmpArr[2], tmpArr[3], tmpArr[4], tmpArr[5]);
@@ -132,7 +131,7 @@ struct dataTemp *temperCsv(char *csv){
 }
 
 /* Функция вывода массива структур dataTemp с длиной line */
-void printTempStruct(struct dataTemp *statistic, int start, int end){
+void printTempStruct(dataTemp *statistic, int start, int end){
     for(int i = start; i <= end; i++){
         printf("%d-%02d-%d  %02d:%02d  t=%d\n", 
             statistic[i].year,

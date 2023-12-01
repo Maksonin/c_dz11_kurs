@@ -24,23 +24,30 @@ void doit(){
         exit(0);
     }
     
-    struct dataTemp *statistic = temperCsv(csv);
+    dataTemp *statistic = temperCsv(csv);
     
     // printf(" %d \n", statistic[0].temperature);
-    int month = 2;
-    int min_temp = 0;
-    int max_temp = 0;
+    int month = 0;
+
     float sr_temp = 0;
     int i = 0;
     int j = 0;
-    
+    int min_temp, max_temp = statistic[i].temperature;
+
     while(i < settings.numberLine){
         if(statistic[i].mounth == month){
             printTempStruct(statistic, i, i);
-            if(j==0){
+
+            sr_temp += statistic[i].temperature;
+            if(statistic[i].temperature > max_temp)
                 max_temp = statistic[i].temperature;
+            if(statistic[i].temperature < min_temp)
                 min_temp = statistic[i].temperature;
-            }
+            j++;
+        }
+        else if(month == 0){
+            printTempStruct(statistic, i, i);
+
             sr_temp += statistic[i].temperature;
             if(statistic[i].temperature > max_temp)
                 max_temp = statistic[i].temperature;
