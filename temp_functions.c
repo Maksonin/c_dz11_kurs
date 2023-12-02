@@ -1,5 +1,60 @@
 #include "temp_functions.h"
 
+void doit(char *fileN, char *mounth){
+    printf("DoIT!\n");
+    char *csv;
+    printf("%s\n", fileN);
+
+    if(fileN)
+        csv = readFile(fileN);
+    else{
+        printf("The program didn't  recieve -f parametr. Change default file\n");
+        csv = readFile(defaultFile);
+    }
+    if(!csv){
+        printf("Error! The CSV file is missing!\n");
+        exit(0);
+    }
+    
+    dataTemp *statistic = temperCsv(csv);
+    
+    // printf(" %d \n", statistic[0].temperature);
+    int month = 2;
+
+    float sr_temp = 0;
+    int i = 0;
+    int j = 0;
+    int min_temp, max_temp = statistic[i].temperature;
+
+    while(i < numberLine){
+        if(statistic[i].mounth == month){
+            printTempStruct(statistic, i, i);
+
+            sr_temp += statistic[i].temperature;
+            if(statistic[i].temperature > max_temp)
+                max_temp = statistic[i].temperature;
+            if(statistic[i].temperature < min_temp)
+                min_temp = statistic[i].temperature;
+            j++;
+        }
+        else if(month == 0){
+            printTempStruct(statistic, i, i);
+
+            sr_temp += statistic[i].temperature;
+            if(statistic[i].temperature > max_temp)
+                max_temp = statistic[i].temperature;
+            if(statistic[i].temperature < min_temp)
+                min_temp = statistic[i].temperature;
+            j++;
+        }
+        i++;
+    }
+    sr_temp /= j;
+
+    printf("Middle - %.2f \tMinimum - %d \tMaximum - %d\n", sr_temp, min_temp, max_temp);
+}
+
+
 /* Функция чтения файлов. Принимает путь. Возвращает адрес начала строки */
 char *readFile(char *name){
     FILE *f;
@@ -31,20 +86,20 @@ dataTemp *temperCsv(char *csv){
 
     /*****************************/
     // нахождение количества строк csv
-    settings.csvLen = strlen(csv);
-    if(settings.csvLen == 0){
+    csvLen = strlen(csv);
+    if(csvLen == 0){
         printf("Error. No data\n");
         exit(0);
     }
 
-    settings.numberLine = 0;
+    numberLine = 0;
     int i = 0;
-    while(i < settings.csvLen){
+    while(i < csvLen){
         if((csv[i] == '\n') || (csv[i] == 0) ) // поиск по переводу строки
-            settings.numberLine++;
+            numberLine++;
         i++;
     }
-    printf("line - %d\n", settings.numberLine);
+    printf("line - %ld\n", numberLine);
     /*****************************/
 
     // typedef struct {
@@ -60,7 +115,7 @@ dataTemp *temperCsv(char *csv){
     //     year[i] = malloc(31 * sizeof(year));
 
     dataTemp *statistic; // размер массива структур = количество строк в файле
-    statistic = malloc(settings.numberLine * sizeof(*statistic));
+    statistic = malloc(numberLine * sizeof(*statistic));
 
     /*****************************/
     
@@ -70,7 +125,7 @@ dataTemp *temperCsv(char *csv){
     int struct_counter = 0; // счетчик для массива структур
     i = 0; // счетчик элементов обрабатываемой строки
     
-    while(i <= settings.csvLen){ // проверяем в цикле каждый элемент строки csv
+    while(i <= csvLen){ // проверяем в цикле каждый элемент строки csv
         if(csv[i] == ';') {
             // printf("sym - %d counter - %d\n", csv[i], counter);
             counter++;

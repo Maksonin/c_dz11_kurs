@@ -1,3 +1,6 @@
+#ifndef TEMP_FUNCTIONS_H
+#define TEMP_FUNCTIONS_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -5,13 +8,13 @@
 #include <unistd.h>
 
 #define defaultFile "temper_data.csv" // файл по умолчанию
-struct programm
-{
-    char *fileName; // название csv файла для открытия
-    long int csvLen; // длина строки из csv файла
-    long int numberLine; // количество строк в csv файле (количество структур)
-    _Bool mounth; // месяц
-} settings;
+
+
+static char *fileName; // название csv файла для открытия
+static long int csvLen; // длина строки из csv файла
+static long int numberLine; // количество строк в csv файле (количество структур)
+static _Bool mounth; // месяц
+
 
 typedef struct 
 {
@@ -23,6 +26,9 @@ typedef struct
     int8_t temperature;
 } dataTemp;
 
+void doit(char *fileN, char *mounth);
 char *readFile(char *name);
 dataTemp *temperCsv(char *csv);
 void printTempStruct(dataTemp *statistic, int start, int end);
+
+#endif
