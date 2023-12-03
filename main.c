@@ -21,21 +21,21 @@
 int main(int argc, char **argv){
     int rez = 0;
     char *fileN;
-    char *month;
+    int month = 0;
     
     while((rez = getopt(argc, argv,"hf:m::")) != -1 ){
         switch (rez)
         {
         case 'h': printf("found argument \"a\" \n"); break;
         case 'f': printf("found argument \"b = %s\" \n", optarg); fileN = optarg; break;
-        case 'm': printf("found argument \"C = %s\" \n", optarg); month = optarg; break;
+        case 'm': printf("found argument \"C = %s\" \n", optarg); month = atoi(optarg); break;
         // case '?': printf("No param \n");  break;
         default:
             break;
         }
     }
-    
-    doit(fileN, month);
+
+    getStatistic(fileN, month);
 
     return 0;
 }
