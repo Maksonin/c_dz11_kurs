@@ -1,7 +1,7 @@
 #include "temp_functions.h"
 
 /* Фунция объединяющая все действия для получения статистики из файла */
-void getStatistic(char *fileN, int month){
+void getStatistic(char *fileN, int month, _Bool listAll){
     char *csv;
 
     // если имя файла присутствует
@@ -22,14 +22,11 @@ void getStatistic(char *fileN, int month){
 
     free(csv); // освобождение памяти выделенной для хранения данных из файла
 
-    printStatistic(statistic, month); // вывод статистики в соответствии с полученными данными
+    printStatistic(statistic, month, listAll); // вывод статистики в соответствии с полученными данными
 }
 
 /* Функция выводит статистику темпаратуры по определенному месяцу или году */
-void printStatistic(stack *statistic, int month){
-    // printf("Print statistic!\n");
-    
-    int j = 0;
+void printStatistic(stack *statistic, int month, _Bool listAll){
 
     typedef struct {
         int year;
@@ -39,11 +36,13 @@ void printStatistic(stack *statistic, int month){
         int n;
     } temperStat;
 
+    int sizeYear = 1;
+    int nYear = 0;
+
     if(month > 0){
+
         month -= 1;
-        
-        int sizeYear = 1;
-        int nYear = 0;
+
         temperStat *monthStat = malloc(sizeYear * sizeof(temperStat));
         monthStat[nYear].year = statistic[0].data[0].year;
 
@@ -76,7 +75,10 @@ void printStatistic(stack *statistic, int month){
                     }
                 }   
             }
-            printTempStruct(statistic[month].data, i, i);
+
+            // если задан параметр -l
+            if(listAll)
+                printTempStruct(statistic[month].data, i, i);
 
             monthStat[nYear].sr_temp += statistic[month].data[i].temperature;
             if(statistic[month].data[i].temperature > monthStat[nYear].max_temp)
@@ -88,26 +90,24 @@ void printStatistic(stack *statistic, int month){
         }
         for(int i = 0; i < sizeYear; i++){
             monthStat[i].sr_temp /= monthStat[i].n;
-            printf("Year - %d, Middle - %.2f \tMinimum - %d \tMaximum - %d\n", monthStat[i].year, monthStat[i].sr_temp, monthStat[i].min_temp, monthStat[i].max_temp);
+            printf("\nYear - %d, Middle - %.2f \tMinimum - %d \tMaximum - %d\n", monthStat[i].year, monthStat[i].sr_temp, monthStat[i].min_temp, monthStat[i].max_temp);
         }
         exit(0);
     }
+
     // вывод статистики по годам
     else if(month == 0){
         printf("-- Statistics by year --\n");
 
-        int sizeYear = 1;
-        int nYear = 0;
         temperStat *yearStat = malloc(sizeYear * sizeof(temperStat));
         yearStat[nYear].year = statistic[0].data[0].year;
 
         for(int i = 0; i < 12; i++){
+            if(i == 0){
+                yearStat[nYear].min_temp = statistic[i].data[0].temperature;
+                yearStat[nYear].max_temp = statistic[i].data[0].temperature;
+            }
             for(int i1 = 0; i1 < statistic[i].size - 1; i1++){
-                if(i == 0){
-                    yearStat[nYear].min_temp = statistic[i].data[i1].temperature;
-                    yearStat[nYear].max_temp = statistic[i].data[i1].temperature;
-                }
-                
                 // если текущий год выбранный год не сходится с текущим обрабатываемым
                 if(yearStat[nYear].year != statistic[i].data[i1].year){
                     for(int i2 = 0; i2 <= sizeYear; i2++){ // поиск по имеющемуся массиву 
@@ -127,28 +127,26 @@ void printStatistic(stack *statistic, int month){
                     }   
                 }
 
+                // если задан параметр -l
+                if(listAll)
+                    printTempStruct(statistic[i].data, i1, i1);
+
                 yearStat[nYear].sr_temp += statistic[i].data[i1].temperature;
                 if(statistic[i].data[i1].temperature > yearStat[nYear].max_temp)
                     yearStat[nYear].max_temp = statistic[i].data[i1].temperature;
                 if(statistic[i].data[i1].temperature < yearStat[nYear].min_temp)
                     yearStat[nYear].min_temp = statistic[i].data[i1].temperature;
-                
+
                 yearStat[nYear].n++;
             }
         }
 
         for(int i = 0; i < sizeYear; i++){
             yearStat[i].sr_temp /= yearStat[nYear].n;
-            printf("Year - %d, Middle - %.2f \tMinimum - %d \tMaximum - %d\n", yearStat[i].year, yearStat[i].sr_temp, yearStat[i].min_temp, yearStat[i].max_temp);
+            printf("\nYear - %d, Middle - %.2f \tMinimum - %d \tMaximum - %d\n", yearStat[i].year, yearStat[i].sr_temp, yearStat[i].min_temp, yearStat[i].max_temp);
         }
         
         exit(0);
-    }
-    if(j){
-
-    }
-    else {
-        printf("-- No statistics for specified parameters --");
     }
 }
 
@@ -176,6 +174,7 @@ stack *temperCsv(char *csv){
     int counter = 0; // счетчик количества элементов в строке
     int struct_counter = 0; // счетчик для массива структур
     int i = 0; // счетчик элементов обрабатываемой строки
+    int nError = 0;
     
     printf("-- Start convert --\n");
     while(i <= csvLen){ // проверяем в цикле каждый элемент строки csv
@@ -212,7 +211,8 @@ stack *temperCsv(char *csv){
                     struct_counter++; 
             }
             else {
-                printf("ERROR on line = %d (%d;%d;%d;%d;%d;%d)\n", struct_counter+1, tmpArr[0], tmpArr[1], tmpArr[2], tmpArr[3], tmpArr[4], tmpArr[5]);
+                nError++;
+                printf("ERROR on line = %d \n", struct_counter+nError);
             }
             counter = 0;
             minus = 0;

@@ -43,8 +43,8 @@ typedef struct {
     int sp;
 } stack;
 
-void getStatistic(char *fileN, int month);
-void printStatistic(stack *statistic, int month);
+void getStatistic(char *fileN, int month, _Bool listAll);
+void printStatistic(stack *statistic, int month, _Bool listAll);
 stack *temperCsv(char *csv);
 void printHelp();
 char *readFile(char *name);
