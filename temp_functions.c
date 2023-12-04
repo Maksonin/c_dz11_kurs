@@ -17,9 +17,6 @@ void getStatistic(char *fileN, int month){
     }
 
     printf("-- Start program --\n");
-
-    if(month > 0)
-        month -= 1;
     
     stack *statistic = temperCsv(csv);
 
@@ -43,6 +40,8 @@ void printStatistic(stack *statistic, int month){
     } temperStat;
 
     if(month > 0){
+        month -= 1;
+        
         int sizeYear = 1;
         int nYear = 0;
         temperStat *monthStat = malloc(sizeYear * sizeof(temperStat));
@@ -52,7 +51,7 @@ void printStatistic(stack *statistic, int month){
             printf("-- No statistic for this month --\n");
             exit(0);
         }
-        printf("-- Statistick on month - %d --\n", month+1);
+        printf("-- Statistick on month - %s --\n", monthList[month]);
 
         for(int i = 0; i < statistic[month].size - 1; i++){
             if(i == 0){

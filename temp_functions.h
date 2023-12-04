@@ -14,6 +14,19 @@ static long int csvLen; // длина строки из csv файла
 static long int numberLine; // количество строк в csv файле (количество структур)
 static _Bool month; // месяц
 
+static char* monthList[] = {"January", 
+                            "February", 
+                            "March", 
+                            "April", 
+                            "May", 
+                            "Juny", 
+                            "July", 
+                            "Auguest", 
+                            "Septempber", 
+                            "October", 
+                            "November", 
+                            "December" };
+
 typedef struct 
 {
     uint16_t year;
