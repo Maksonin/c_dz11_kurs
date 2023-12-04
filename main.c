@@ -20,22 +20,37 @@
  */
 int main(int argc, char **argv){
     int rez = 0;
-    char *fileN;
+    char *fileN = 0;
     int month = 0;
+    int nParam = 0;
     
     while((rez = getopt(argc, argv,"hf:m::")) != -1 ){
         switch (rez)
         {
-        case 'h': printf("found argument \"a\" \n"); break;
-        case 'f': printf("found argument \"b = %s\" \n", optarg); fileN = optarg; break;
-        case 'm': printf("found argument \"C = %s\" \n", optarg); month = atoi(optarg); break;
-        // case '?': printf("No param \n");  break;
+        case 'h': 
+            printf("found argument \"h\" \n"); 
+            printHelp(); 
+            break;
+        case 'f': 
+            printf("found argument \"f = %s\" \n", optarg); 
+            fileN = optarg; 
+            nParam++;
+            break;
+        case 'm': 
+            printf("found argument \"m = %s\" \n", optarg); 
+            month = atoi(optarg); 
+            nParam++;
+            break;
         default:
+            printHelp();
             break;
         }
     }
 
-    getStatistic(fileN, month);
+    if(nParam)
+        getStatistic(fileN, month);
+    else
+        printHelp();
 
     return 0;
 }

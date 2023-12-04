@@ -4,19 +4,17 @@
 void getStatistic(char *fileN, int month){
     printf("DoIT!\n");
     char *csv;
-    // printf("%s\n", fileN);
-    // printf("%d\n", month);
 
     // если имя файла присутствует
     if(fileN)
         csv = readFile(fileN); // читаем файл
-    else { // если имя файла не передано в переменной
-        printf("The program didn't  recieve -f parametr. Change default file (temper_data.csv)\n");
-        csv = readFile(defaultFile); // читаем файл по умолчанию
-    }
-    if(!csv){ // если ни один файл не прочитан
-        printf("Error! The CSV file is missing!\n");
-        exit(1);
+    else if(!csv){ // если имя файла не передано в переменной
+        printf("The program didn't recieve -f parametr. Change default file (temper_data.csv)\n");
+        if((csv = readFile(defaultFile)) == 0){ // читаем файл по умолчанию
+             // если ни один файл не прочитан
+            printf("Error! The default CSV file is missing!\n");
+            exit(1);
+        }
     }
 
     if(month > 0)
@@ -170,6 +168,15 @@ stack *temperCsv(char *csv){
     printf("End convert\n");
 
     return dataArr;
+}
+
+/* Функция выводит справку */
+void printHelp(){
+    char *helpFile = readFile("README.md");
+    if(!helpFile)
+        exit(1);
+    printf("%s\n", helpFile);
+    exit(0);
 }
 
 /* Функция чтения файлов. Принимает путь. Возвращает адрес начала строки */
